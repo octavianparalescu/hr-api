@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Models\Auth;
+namespace App\Entities\Auth;
 
 
-use App\Models\Contract\Key;
+use App\Entities\Contract\Key;
 
 class UserKey implements Key
 {

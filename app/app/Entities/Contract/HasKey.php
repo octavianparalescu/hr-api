@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Models\Contract;
+namespace App\Entities\Contract;
 
 
 interface HasKey

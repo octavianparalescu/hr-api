@@ -1,17 +1,19 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Models\Auth;
+namespace App\Entities\Auth;
 
+
+use DateTime;
 
 class AuthToken
 {
     private UserKey $userKey;
     private string $token;
-    private \DateTime $dateCreated;
-    private \DateTime $dateUsed;
+    private DateTime $dateCreated;
+    private DateTime $dateUsed;
 
-    public function __construct(UserKey $userKey, string $token, \DateTime $dateCreated, \DateTime $dateUsed)
+    public function __construct(UserKey $userKey, string $token, DateTime $dateCreated, DateTime $dateUsed)
     {
         $this->userKey = $userKey;
         $this->token = $token;
@@ -36,20 +38,18 @@ class AuthToken
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getDateCreated(): \DateTime
+    public function getDateCreated(): DateTime
     {
         return $this->dateCreated;
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getDateUsed(): \DateTime
+    public function getDateUsed(): DateTime
     {
         return $this->dateUsed;
     }
-
-
 }
