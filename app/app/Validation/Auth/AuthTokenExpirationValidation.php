@@ -5,14 +5,22 @@ namespace App\Validation\Auth;
 
 
 use App\Entities\Auth\AuthToken;
-use DateTime;
+use App\Entities\Time\TimeInterface;
+use DateInterval;
 
 class AuthTokenExpirationValidation
 {
     const TOKEN_VALIDITY_IN_SECS = 60 * 60 * 24; // 24 hours
+    private TimeInterface $time;
 
-    public function verifyToken(AuthToken $authToken)
+    public function __construct(TimeInterface $time)
     {
-        return $authToken->getDateCreated() < (new DateTime('-' . self::TOKEN_VALIDITY_IN_SECS . 'seconds'));
+        $this->time = $time;
+    }
+
+    public function verifyToken(AuthToken $authToken): bool
+    {
+        return $authToken->getDateUsed() > $this->time->getDateTime()
+                                                      ->sub(new DateInterval('PT' . self::TOKEN_VALIDITY_IN_SECS . 'S'));
     }
 }
