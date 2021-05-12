@@ -6,7 +6,7 @@ namespace App\Entities\Time;
 
 use DateTime;
 
-class Time implements TimeInterface
+class Time extends TimeInterface
 {
     public function getDateTime(): DateTime
     {

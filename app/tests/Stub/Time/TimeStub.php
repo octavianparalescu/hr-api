@@ -6,7 +6,7 @@ namespace Tests\Stub\Time;
 use App\Entities\Time\TimeInterface;
 use DateTime;
 
-class TimeStub implements TimeInterface
+class TimeStub extends TimeInterface
 {
     private DateTime $dateTime;
 

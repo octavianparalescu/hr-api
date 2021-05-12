@@ -5,8 +5,9 @@ namespace App\Entities\Auth;
 
 
 use DateTime;
+use JsonSerializable;
 
-class AuthToken
+class AuthToken implements JsonSerializable
 {
     private UserKey $userKey;
     private string $token;
@@ -51,5 +52,18 @@ class AuthToken
     public function getDateUsed(): DateTime
     {
         return $this->dateUsed;
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'user_id' => $this->getUserKey()
+                              ->getId(),
+            'token' => $this->getToken(),
+            'created_at' => $this->getDateCreated()
+                                 ->format('Y-m-d H:i:s'),
+            'used_at' => $this->getDateUsed()
+                              ->format('Y-m-d H:i:s'),
+        ];
     }
 }

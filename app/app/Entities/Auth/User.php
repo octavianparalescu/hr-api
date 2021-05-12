@@ -4,8 +4,9 @@ namespace App\Entities\Auth;
 
 
 use App\Entities\Contract\HasKey;
+use JsonSerializable;
 
-class User implements HasKey
+class User implements HasKey, JsonSerializable
 {
     private string $firstName;
     private string $email;
@@ -25,7 +26,8 @@ class User implements HasKey
      */
     public function getId(): int
     {
-        return $this->getKey()->getId();
+        return $this->getKey()
+                    ->getId();
     }
 
     /**
@@ -55,5 +57,15 @@ class User implements HasKey
     public function getLastName(): string
     {
         return $this->lastName;
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->getId(),
+            'first_name' => $this->getFirstName(),
+            'last_name' => $this->getLastName(),
+            'email' => $this->getEmail(),
+        ];
     }
 }

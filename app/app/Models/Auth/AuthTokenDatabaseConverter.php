@@ -18,7 +18,7 @@ class AuthTokenDatabaseConverter implements DatabaseConverter
     public function fromDbToEntity(array $dbObject)
     {
         return new AuthToken(
-            new UserKey($dbObject['user_id']),
+            new UserKey((int) $dbObject['user_id']),
             $dbObject['token'],
             new DateTime($dbObject['created_at']),
             new DateTime($dbObject['used_at'])

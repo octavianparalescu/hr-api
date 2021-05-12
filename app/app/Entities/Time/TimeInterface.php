@@ -6,7 +6,13 @@ namespace App\Entities\Time;
 
 use DateTime;
 
-interface TimeInterface
+abstract class TimeInterface
 {
-    public function getDateTime(): DateTime;
+    abstract public function getDateTime(): DateTime;
+
+    public function getTimeSqlFormat(): string
+    {
+        return $this->getDateTime()
+                    ->format('Y-m-d H:i:s');
+    }
 }

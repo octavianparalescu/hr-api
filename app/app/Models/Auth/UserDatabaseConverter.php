@@ -13,7 +13,7 @@ class UserDatabaseConverter implements DatabaseConverter
     public function fromDbToEntity(array $dbObject): User
     {
         return new User(
-            new UserKey($dbObject['id']), $dbObject['first_name'], $dbObject['last_name'], $dbObject['email']
+            new UserKey((int) $dbObject['id']), $dbObject['first_name'], $dbObject['last_name'], $dbObject['email']
         );
     }
 

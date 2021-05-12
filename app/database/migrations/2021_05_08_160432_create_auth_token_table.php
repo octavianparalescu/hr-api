@@ -24,7 +24,8 @@ class CreateAuthTokenTable extends Migration
                       ->unique();
                 $table->dateTime('used_at')
                       ->index(); // to show active users
-                $table->timestamps();
+                $table->timestamp('created_at')
+                      ->nullable();
             }
         );
     }

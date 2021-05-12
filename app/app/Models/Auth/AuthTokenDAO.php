@@ -4,6 +4,9 @@ declare(strict_types=1);
 namespace App\Models\Auth;
 
 
+use App\Entities\Auth\AuthToken;
+use App\Entities\Auth\UserKey;
+use App\Entities\Time\TimeInterface;
 use Exception;
 use Illuminate\Support\Facades\DB;
 
@@ -11,10 +14,12 @@ class AuthTokenDAO
 {
     const TABLE = 'auth_token';
     private AuthTokenDatabaseConverter $converter;
+    private TimeInterface $time;
 
-    public function __construct(AuthTokenDatabaseConverter $converter)
+    public function __construct(AuthTokenDatabaseConverter $converter, TimeInterface $time)
     {
         $this->converter = $converter;
+        $this->time = $time;
     }
 
     /**
@@ -23,7 +28,7 @@ class AuthTokenDAO
     public function fetch(string $token)
     {
         $object = DB::table(self::TABLE)
-                    ->select('id, user_id, token, created_at, used_at')
+                    ->select(['id', 'user_id', 'token', 'created_at', 'used_at'])
                     ->where('token', $token)
                     ->first();
 
@@ -31,6 +36,15 @@ class AuthTokenDAO
             return false;
         }
 
-        return $this->converter->fromDbToEntity($object->toArray());
+        return $this->converter->fromDbToEntity((array) $object);
+    }
+
+    public function create(UserKey $userKey, string $token): AuthToken
+    {
+        $currentTime = $this->time->getTimeSqlFormat();
+        DB::table(self::TABLE)
+          ->insert(['user_id' => $userKey->getId(), 'token' => $token, 'used_at' => $currentTime, 'created_at' => $currentTime]);
+
+        return $this->fetch($token);
     }
 }
