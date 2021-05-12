@@ -6,6 +6,7 @@ namespace Tests\Http\Controllers;
 
 use App\Entities\Time\TimeInterface;
 use App\Models\Auth\UserDAO;
+use App\Providers\AuthServiceProvider;
 use App\Validation\Auth\AuthTokenFormatValidationInterface;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Tests\Stub\Auth\AuthTokenFormatValidationStub;
@@ -165,5 +166,32 @@ class AuthControllerTest extends TestCase
              ->seeStatusCode(200)
              ->seeInDatabase(UserDAO::TABLE, ['email' => $email])
              ->seeJson(['email' => $email]);
+    }
+
+    public function testVerifyValidLogin()
+    {
+        $email = 'test@test.com';
+        $password = 'testpassword';
+        $this->registerSuccesfully($email, $password);
+
+        $loginData = [
+            'email' => $email,
+            'password' => $password,
+        ];
+
+        $loginResponse = $this->json('POST', '/auth/login', $loginData)->response->json();
+
+        $token = $loginResponse['token'];
+
+        $this->json('GET', '/auth/check', [], [AuthServiceProvider::AUTH_TOKEN => $token])
+             ->seeStatusCode(200)
+             ->seeJson(['email' => $email]);
+    }
+
+    public function testVerifyInValidLogin()
+    {
+        $this->json('GET', '/auth/check', [], [AuthServiceProvider::AUTH_TOKEN => 'something'])
+             ->seeStatusCode(401)
+             ->seeJson(null);
     }
 }

@@ -10,6 +10,8 @@ use Laravel\Lumen\Http\Request;
 
 class AuthServiceProvider extends ServiceProvider
 {
+    const AUTH_TOKEN = 'Auth-Token';
+
     /**
      * Register any application services.
      * @return void
@@ -36,7 +38,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->app['auth']->viaRequest(
             'api',
             function (Request $request) use ($authTokenRepository, $userRepository, $authTokenExpirationValidation) {
-                if ($token = $request->header('auth_token')) {
+                if ($token = $request->header(self::AUTH_TOKEN)) {
                     $tokenEntity = $authTokenRepository->fetch($token);
                     if ($tokenEntity && $authTokenExpirationValidation->verifyToken($tokenEntity)) {
                         return $userRepository->fetchByKey($tokenEntity->getUserKey());

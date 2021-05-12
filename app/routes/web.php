@@ -13,8 +13,6 @@
 |
 */
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Laravel\Lumen\Routing\Router;
 
 $router->get(
@@ -24,16 +22,6 @@ $router->get(
     }
 );
 
-$router->get(
-    '/auth/check',
-    [
-        'middleware' => 'auth',
-        function (Request $request, $id) {
-            $user = Auth::user();
-        },
-    ]
-);
-
 $router->post('/auth/login', ['uses' => 'AuthController@login']);
 $router->post('/auth/register', ['uses' => 'AuthController@register']);
-$router->post('/auth/check', ['middleware' => 'auth', 'uses' => 'AuthController@check']);
+$router->get('/auth/check', ['middleware' => 'auth', 'uses' => 'AuthController@check']);
