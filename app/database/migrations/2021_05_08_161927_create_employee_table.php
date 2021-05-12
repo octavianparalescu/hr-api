@@ -18,10 +18,11 @@ class CreateEmployeeTable extends Migration
                 $table->id();
                 $table->string('first_name');
                 $table->string('last_name');
-                $table->unsignedBigInteger('salary_amount');
-                $table->unsignedBigInteger('salary_currency_id');
-                $table->foreign('salary_currency_id')
-                      ->on('currency')
+                $table->double('salary')
+                      ->index();
+                $table->unsignedBigInteger('department_id');
+                $table->foreign('department_id')
+                      ->on('department')
                       ->references('id');
                 $table->timestamps();
             }

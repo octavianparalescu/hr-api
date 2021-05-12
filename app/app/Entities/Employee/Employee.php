@@ -5,16 +5,15 @@ namespace App\Entities\Employee;
 
 
 use App\Entities\Contract\HasKey;
-use App\Entities\Money\MoneyAmount;
 
 class Employee implements HasKey
 {
     private EmployeeKey $key;
     private string $firstName;
     private string $lastName;
-    private MoneyAmount $salary;
+    private float $salary;
 
-    public function __construct(EmployeeKey $key, string $firstName, string $lastName, MoneyAmount $salary)
+    public function __construct(EmployeeKey $key, string $firstName, string $lastName, float $salary)
     {
         $this->key = $key;
         $this->firstName = $firstName;
@@ -50,9 +49,9 @@ class Employee implements HasKey
     }
 
     /**
-     * @return MoneyAmount
+     * @return float
      */
-    public function getSalary(): MoneyAmount
+    public function getSalary(): float
     {
         return $this->salary;
     }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCurrencyTable extends Migration
+class CreateDepartmentTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,9 @@ class CreateCurrencyTable extends Migration
     public function up()
     {
         Schema::create(
-            'currency',
+            'department',
             function (Blueprint $table) {
                 $table->id();
-                $table->string('code')
-                      ->unique();
                 $table->string('name');
                 $table->timestamps();
             }
@@ -30,6 +28,6 @@ class CreateCurrencyTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('currency');
+        Schema::dropIfExists('department');
     }
 }
