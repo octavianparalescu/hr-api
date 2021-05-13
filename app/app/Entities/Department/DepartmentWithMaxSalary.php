@@ -28,4 +28,9 @@ class DepartmentWithMaxSalary extends Department
     {
         return $this->maxSalary;
     }
+
+    public function jsonSerialize(): array
+    {
+        return ['id' => $this->getId(), 'name' => $this->getName(), 'max_salary' => $this->getMaxSalary()];
+    }
 }

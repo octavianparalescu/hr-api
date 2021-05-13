@@ -5,8 +5,9 @@ namespace App\Entities\Department;
 
 
 use App\Entities\Contract\HasKey;
+use JsonSerializable;
 
-class Department implements HasKey
+class Department implements HasKey, JsonSerializable
 {
     private DepartmentKey $key;
     private string $name;
@@ -34,5 +35,10 @@ class Department implements HasKey
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return ['id' => $this->getId(), 'name' => $this->getName()];
     }
 }

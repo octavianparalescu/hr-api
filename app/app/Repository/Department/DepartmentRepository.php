@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Repository\Department;
 
 
+use App\Entities\Department\Department;
 use App\Entities\Department\DepartmentList;
 use App\Models\Department\DepartmentDAO;
 use Exception;
@@ -38,5 +39,10 @@ class DepartmentRepository
     public function fetchWithEmployeeSalariesHigherCondition(int $minNoOfEmployees, float $havingMinSalary): DepartmentList
     {
         return $this->DAO->fetchWithEmployeeSalariesHigherCondition($minNoOfEmployees, $havingMinSalary);
+    }
+
+    public function create(array $data): Department
+    {
+        return $this->DAO->create($data);
     }
 }

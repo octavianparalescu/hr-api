@@ -81,11 +81,8 @@ abstract class ListEntity implements Countable, IteratorAggregate, JsonSerializa
         return count($this->data);
     }
 
-    /**
-     * @return false|string
-     */
     public function jsonSerialize()
     {
-        return json_encode($this->data);
+        return $this->data;
     }
 }

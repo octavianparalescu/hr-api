@@ -5,20 +5,29 @@ namespace App\Entities\Employee;
 
 
 use App\Entities\Contract\HasKey;
+use App\Entities\Department\DepartmentKey;
+use JsonSerializable;
 
-class Employee implements HasKey
+class Employee implements HasKey, JsonSerializable
 {
     private EmployeeKey $key;
     private string $firstName;
     private string $lastName;
     private float $salary;
+    private DepartmentKey $departmentKey;
 
-    public function __construct(EmployeeKey $key, string $firstName, string $lastName, float $salary)
-    {
+    public function __construct(
+        EmployeeKey $key,
+        DepartmentKey $departmentKey,
+        string $firstName,
+        string $lastName,
+        float $salary
+    ) {
         $this->key = $key;
         $this->firstName = $firstName;
         $this->lastName = $lastName;
         $this->salary = $salary;
+        $this->departmentKey = $departmentKey;
     }
 
     public function getId(): int
@@ -54,5 +63,25 @@ class Employee implements HasKey
     public function getSalary(): float
     {
         return $this->salary;
+    }
+
+    /**
+     * @return DepartmentKey
+     */
+    public function getDepartmentKey(): DepartmentKey
+    {
+        return $this->departmentKey;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'first_name' => $this->getFirstName(),
+            'last_name' => $this->getLastName(),
+            'salary' => $this->getSalary(),
+            'department_id' => $this->getDepartmentKey()
+                                    ->getId(),
+        ];
     }
 }

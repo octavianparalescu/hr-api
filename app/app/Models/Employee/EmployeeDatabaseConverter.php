@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Models\Employee;
 
 
+use App\Entities\Department\DepartmentKey;
 use App\Entities\Employee\Employee;
 use App\Entities\Employee\EmployeeKey;
 use App\Models\Contract\DatabaseConverter;
@@ -13,7 +14,11 @@ class EmployeeDatabaseConverter implements DatabaseConverter
     public function fromDbToEntity(array $dbObject)
     {
         return new Employee(
-            new EmployeeKey($dbObject['id']), $dbObject['first_name'], $dbObject['last_name'], $dbObject['salary']
+            new EmployeeKey((int) $dbObject['id']),
+            new DepartmentKey((int) $dbObject['department_id']),
+            $dbObject['first_name'],
+            $dbObject['last_name'],
+            (float) $dbObject['salary']
         );
     }
 

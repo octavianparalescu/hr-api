@@ -4,9 +4,10 @@ namespace App\Entities\Auth;
 
 
 use App\Entities\Contract\HasKey;
+use Illuminate\Contracts\Auth\Authenticatable;
 use JsonSerializable;
 
-class User implements HasKey, JsonSerializable
+class User implements HasKey, JsonSerializable, Authenticatable
 {
     private string $firstName;
     private string $email;
@@ -67,5 +68,35 @@ class User implements HasKey, JsonSerializable
             'last_name' => $this->getLastName(),
             'email' => $this->getEmail(),
         ];
+    }
+
+    public function getAuthIdentifierName()
+    {
+        return null;
+    }
+
+    public function getAuthIdentifier()
+    {
+        return null;
+    }
+
+    public function getAuthPassword()
+    {
+        return null;
+    }
+
+    public function getRememberToken()
+    {
+        return null;
+    }
+
+    public function setRememberToken($value)
+    {
+        return null;
+    }
+
+    public function getRememberTokenName()
+    {
+        return null;
     }
 }

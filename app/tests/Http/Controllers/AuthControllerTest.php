@@ -162,10 +162,7 @@ class AuthControllerTest extends TestCase
             'last_name' => 'Test',
         ];
 
-        $this->json('POST', '/auth/register', $registerData)
-             ->seeStatusCode(200)
-             ->seeInDatabase(UserDAO::TABLE, ['email' => $email])
-             ->seeJson(['email' => $email]);
+        $this->call('POST', '/auth/register', $registerData);
     }
 
     public function testVerifyValidLogin()

@@ -5,6 +5,7 @@ namespace App\Repository\Employee;
 
 
 use App\Entities\Department\DepartmentKey;
+use App\Entities\Employee\Employee;
 use App\Entities\Employee\EmployeeList;
 use App\Models\Employee\EmployeeDAO;
 
@@ -30,5 +31,10 @@ class EmployeeRepository
         string $orderDirection = 'DESC'
     ): EmployeeList {
         return $this->DAO->fetchFromDepartment($departmentKey, $orderColumn, $orderDirection);
+    }
+
+    public function create(array $data): Employee
+    {
+        return $this->DAO->create($data);
     }
 }

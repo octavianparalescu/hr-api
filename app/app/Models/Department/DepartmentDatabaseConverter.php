@@ -13,13 +13,13 @@ class DepartmentDatabaseConverter implements DatabaseConverter
 {
     public function fromDbToEntity(array $dbObject)
     {
-        return new Department(new DepartmentKey($dbObject['id']), $dbObject['name']);
+        return new Department(new DepartmentKey((int) $dbObject['id']), $dbObject['name']);
     }
 
     public function fromDbToEntityWithMaxSalary(array $dbObject)
     {
         return new DepartmentWithMaxSalary(
-            new DepartmentKey($dbObject['id']), $dbObject['name'], $dbObject['max_salary'] ?? 0
+            new DepartmentKey((int) $dbObject['id']), $dbObject['name'], $dbObject['max_salary'] ?? 0
         );
     }
 
