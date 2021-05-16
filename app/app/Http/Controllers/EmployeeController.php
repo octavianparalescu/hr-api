@@ -15,7 +15,7 @@ class EmployeeController extends Controller
     {
         $departmentId = $request->input('department_id');
         if ($departmentId) {
-            if (!$departmentRepository->fetch($departmentId)) {
+            if (!$departmentRepository->fetch((int) $departmentId)) {
                 return response()->json(['errors' => ['department_id' => ['Department not found.']]], 405);
             }
 

@@ -27,5 +27,6 @@ $router->post('/auth/register', ['uses' => 'AuthController@register']);
 $router->get('/auth/check', ['middleware' => 'auth', 'uses' => 'AuthController@check']);
 $router->get('/department', ['middleware' => 'auth', 'uses' => 'DepartmentController@index']);
 $router->put('/department', ['middleware' => 'auth', 'uses' => 'DepartmentController@store']);
+$router->get('/department/{departmentId}', ['middleware' => 'auth', 'uses' => 'DepartmentController@show']);
 $router->get('/employee', ['middleware' => 'auth', 'uses' => 'EmployeeController@index']);
 $router->put('/employee', ['middleware' => 'auth', 'uses' => 'EmployeeController@store']);

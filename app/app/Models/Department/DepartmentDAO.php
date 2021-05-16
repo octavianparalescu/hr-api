@@ -27,8 +27,8 @@ class DepartmentDAO
     {
         $departmentList = new DepartmentList();
         $objects = DB::table(self::TABLE)
-            ->select(['id', 'name'])
-            ->get();
+                     ->select(['id', 'name'])
+                     ->get();
 
         if (!$objects) {
             return $departmentList;
@@ -45,11 +45,14 @@ class DepartmentDAO
     {
         $departmentList = new DepartmentList();
         $objects = DB::table(self::TABLE)
-            ->select(['id', 'name', 'count(employee.id)'])
-            ->join(EmployeeDAO::TABLE, EmployeeDAO::TABLE . '.department_id', self::TABLE . '.id')
-            ->where(EmployeeDAO::TABLE . '.salary > ' . $havingMinSalary)
-            ->having('count(employee.id)', '>', $minNoOfEmployees)
-            ->get();
+                     ->select(['name'])
+                     ->addSelect(DB::raw('count(' . EmployeeDAO::TABLE . '.id)'))
+                     ->addSelect(DB::raw(self::TABLE . '.id as id'))
+                     ->leftJoin(EmployeeDAO::TABLE, EmployeeDAO::TABLE . '.department_id', self::TABLE . '.id')
+                     ->whereRaw(EmployeeDAO::TABLE . '.salary > ?', [$havingMinSalary])
+                     ->havingRaw('count(employee.id) > ?', [$minNoOfEmployees])
+                     ->groupByRaw(self::TABLE . '.id, name')
+                     ->get();
 
         if (!$objects) {
             return $departmentList;
@@ -66,10 +69,13 @@ class DepartmentDAO
     {
         $departmentList = new DepartmentList();
         $objects = DB::table(self::TABLE)
-                     ->select(['name'])
-                     ->addSelect(DB::raw('MAX(' . EmployeeDAO::TABLE . '.salary) as max_salary'))
-                     ->addSelect(DB::raw(self::TABLE . '.id as id'))
-                     ->leftJoin(EmployeeDAO::TABLE, EmployeeDAO::TABLE . '.department_id', '=', self::TABLE . '.id')
+                     ->select(['id', 'name'])
+                     ->addSelect(DB::raw(self::TABLE . '.id as id_department'))
+                     ->addSelect(
+                         DB::raw(
+                             '(SELECT MAX(salary) as max_salary FROM ' . EmployeeDAO::TABLE . ' WHERE department_id=id_department) as max_salary'
+                         )
+                     )
                      ->get();
 
         if (!$objects) {

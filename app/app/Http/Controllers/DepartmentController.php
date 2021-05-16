@@ -49,4 +49,15 @@ class DepartmentController extends Controller
 
         return response()->json($department);
     }
+
+    public function show(int $departmentId, DepartmentRepository $departmentRepository)
+    {
+        $department = $departmentRepository->fetch($departmentId);
+
+        if (!$department) {
+            return response()->json(['errors' => ['id' => ['Department not found.']]], 404);
+        }
+
+        return response()->json($department);
+    }
 }
