@@ -34,8 +34,8 @@ class EmployeeController extends Controller
             $this->validate(
                 $request,
                 [
-                    'first_name' => 'required|string|min:6|max:255',
-                    'last_name' => 'required|string|min:6|max:255',
+                    'first_name' => 'required|string|min:2|max:255',
+                    'last_name' => 'required|string|min:2|max:255',
                     'salary' => 'required|numeric',
                     'department_id' => 'required|integer',
                 ]

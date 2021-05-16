@@ -36,7 +36,7 @@ class DepartmentController extends Controller
             $this->validate(
                 $request,
                 [
-                    'name' => 'required|string|min:6|max:255',
+                    'name' => 'required|string|min:3|max:255',
                 ]
             );
         } catch (ValidationException $validationException) {
