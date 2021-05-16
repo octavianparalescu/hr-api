@@ -72,7 +72,7 @@ class AuthController extends Controller
                     'first_name' => 'required',
                     'last_name' => 'required',
                     'email' => 'required|email',
-                    'password' => 'required|' . self::VALIDATION_PASSWORD,
+                    'password' => 'required|confirmed|' . self::VALIDATION_PASSWORD,
                 ]
             );
         } catch (ValidationException $validationException) {
@@ -82,7 +82,7 @@ class AuthController extends Controller
         $inputData = $request->only(['first_name', 'last_name', 'email', 'password']);
 
         if ($userRepository->isEmailRegistered($inputData['email'])) {
-            return response()->json(['errors' => ['An account with this email is already registered.']], 405);
+            return response()->json(['errors' => ['email' => ['An account with this email is already registered.']]], 405);
         }
 
         $inputData[PasswordAuthentication::FIELD_PASSWORD] = $passwordAuthentication->hash(
