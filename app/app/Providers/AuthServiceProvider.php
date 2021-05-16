@@ -10,7 +10,7 @@ use Laravel\Lumen\Http\Request;
 
 class AuthServiceProvider extends ServiceProvider
 {
-    const AUTH_TOKEN = 'Auth-Token';
+    const AUTH_TOKEN = 'token';
 
     /**
      * Register any application services.
