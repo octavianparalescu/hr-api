@@ -46,11 +46,11 @@ class AuthController extends Controller
         $existingPassword = $userRepository->getPasswordForEmail($credentials[PasswordAuthentication::FIELD_EMAIL]);
 
         if (!$existingPassword) {
-            return response()->json(['errors' => ['Credentials do not match records in our database.']], 405);
+            return response()->json(['errors' => ['email' => ['Credentials do not match records in our database.']]], 405);
         }
 
         if (!$passwordAuthentication->verify($credentials, $existingPassword)) {
-            return response()->json(['errors' => ['Credentials do not match records in our database.']], 405);
+            return response()->json(['errors' => ['email' => ['Credentials do not match records in our database.']]], 405);
         }
 
         $user = $userRepository->fetchByEmail($credentials[PasswordAuthentication::FIELD_EMAIL]);
