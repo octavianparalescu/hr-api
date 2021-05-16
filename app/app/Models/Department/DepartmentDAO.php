@@ -70,10 +70,9 @@ class DepartmentDAO
         $departmentList = new DepartmentList();
         $objects = DB::table(self::TABLE)
                      ->select(['id', 'name'])
-                     ->addSelect(DB::raw(self::TABLE . '.id as id_department'))
                      ->addSelect(
                          DB::raw(
-                             '(SELECT MAX(salary) as max_salary FROM ' . EmployeeDAO::TABLE . ' WHERE department_id=id_department) as max_salary'
+                             '(SELECT MAX(salary) as max_salary FROM ' . EmployeeDAO::TABLE . ' WHERE department_id=' . self::TABLE . '.id) as max_salary'
                          )
                      )
                      ->get();
