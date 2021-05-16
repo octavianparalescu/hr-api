@@ -23,6 +23,7 @@ class AuthControllerTest extends TestCase
         $data = [
             'email' => $email,
             'password' => 'testpassword',
+            'password_confirmation' => 'testpassword',
             'first_name' => 'Test',
             'last_name' => 'Test',
         ];
@@ -39,6 +40,7 @@ class AuthControllerTest extends TestCase
         $data = [
             'email' => $email,
             'password' => 'testp',
+            'password_confirmation' => 'testp',
             'first_name' => 'Test',
             'last_name' => 'Test',
         ];
@@ -54,6 +56,7 @@ class AuthControllerTest extends TestCase
         $data = [
             'email' => $email,
             'password' => 'testpassword',
+            'password_confirmation' => 'testpassword',
             'first_name' => 'Test',
             'last_name' => 'Test',
         ];
@@ -66,13 +69,14 @@ class AuthControllerTest extends TestCase
         $data = [
             'email' => $email,
             'password' => 'testpassword',
+            'password_confirmation' => 'testpassword',
             'first_name' => 'Test 2',
             'last_name' => 'Test 2',
         ];
 
         $this->json('POST', '/auth/register', $data)
              ->seeStatusCode(405)
-             ->seeJson(['errors' => ['An account with this email is already registered.']]);
+             ->seeJson(['errors' => ['email' => ['An account with this email is already registered.']]]);
     }
 
     public function testLoginSuccessful()
@@ -115,7 +119,7 @@ class AuthControllerTest extends TestCase
 
         $this->json('POST', '/auth/login', $loginData)
              ->seeStatusCode(405)
-             ->seeJson(['errors' => ['Credentials do not match records in our database.']]);
+             ->seeJson(['errors' => ['email' => ['Credentials do not match records in our database.']]]);
     }
 
     public function testLoginInvalidEmail()
@@ -131,7 +135,7 @@ class AuthControllerTest extends TestCase
 
         $this->json('POST', '/auth/login', $loginData)
              ->seeStatusCode(405)
-             ->seeJson(['errors' => ['Credentials do not match records in our database.']]);
+             ->seeJson(['errors' => ['email' => ['Credentials do not match records in our database.']]]);
     }
 
     public function testLoginNoPassword()
@@ -158,6 +162,7 @@ class AuthControllerTest extends TestCase
         $registerData = [
             'email' => $email,
             'password' => $password,
+            'password_confirmation' => $password,
             'first_name' => 'Test',
             'last_name' => 'Test',
         ];
