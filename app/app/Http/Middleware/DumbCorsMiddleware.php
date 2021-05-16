@@ -24,7 +24,7 @@ class DumbCorsMiddleware
             'Access-Control-Allow-Credentials' => 'true',
             'Access-Control-Allow-Methods' => 'GET, POST, PUT, DELETE, OPTIONS',
             'Access-Control-Max-Age' => '86400',
-            'Access-Control-Allow-Headers' => 'Content-Type, Authorization, X-Requested-With',
+            'Access-Control-Allow-Headers' => 'Token, Content-Type, Authorization, X-Requested-With',
         ];
 
         if ($request->isMethod('OPTIONS')) {
