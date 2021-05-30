@@ -27,10 +27,12 @@ class AuthTokenDAO
      */
     public function fetch(string $token)
     {
-        $object = DB::table(self::TABLE)
-                    ->select(['id', 'user_id', 'token', 'created_at', 'used_at'])
-                    ->where('token', $token)
-                    ->first();
+        $object = DB::selectOne(
+            'SELECT id, user_id, token, created_at, used_at
+                   FROM auth_token
+                   WHERE token = ?',
+            [$token]
+        );
 
         if (!$object) {
             return false;
@@ -42,8 +44,11 @@ class AuthTokenDAO
     public function create(UserKey $userKey, string $token): AuthToken
     {
         $currentTime = $this->time->getTimeSqlFormat();
-        DB::table(self::TABLE)
-          ->insert(['user_id' => $userKey->getId(), 'token' => $token, 'used_at' => $currentTime, 'created_at' => $currentTime]);
+        DB::insert(
+            'INSERT INTO auth_token(`user_id`, `token`, `used_at`, `created_at`)
+                   VALUES(?, ?, ?, ?)',
+            [$userKey->getId(), $token, $currentTime, $currentTime]
+        );
 
         return $this->fetch($token);
     }

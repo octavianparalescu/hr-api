@@ -32,14 +32,14 @@ class EmployeeControllerTest extends TestCase
     {
         $this->createDepartment();
         $employee = [
-            'first_name' => 'First',
+            'first_name' => 'F',
             'last_name' => 'LastName',
             'department_id' => 1,
             'salary' => 40000,
         ];
         $this->actingAs(new UserStub())
              ->json('PUT', '/employee', $employee)
-             ->seeJson(['errors' => ['first_name' => ["The first name must be at least 6 characters."]]])
+             ->seeJson(['errors' => ['first_name' => ["The first name must be at least 2 characters."]]])
              ->seeStatusCode(405);
     }
 

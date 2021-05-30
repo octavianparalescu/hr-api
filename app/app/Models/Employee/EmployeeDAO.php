@@ -29,11 +29,13 @@ class EmployeeDAO
         string $orderDirection = 'DESC'
     ): EmployeeList {
         $employeeList = new EmployeeList();
-        $objects = DB::table(self::TABLE)
-                     ->select(['id', 'first_name', 'last_name', 'salary', 'department_id'])
-                     ->orderBy($orderColumn, $orderDirection)
-                     ->where('department_id', '=', $departmentKey->getId())
-                     ->get();
+        $objects = DB::select(
+            "SELECT id, first_name, last_name, salary, department_id
+                   FROM employee
+                   WHERE department_id = ?
+                   ORDER BY $orderColumn $orderDirection",
+            [$departmentKey->getId()]
+        );
 
         if (!$objects) {
             return $employeeList;
@@ -51,10 +53,11 @@ class EmployeeDAO
         string $orderDirection = 'DESC'
     ): EmployeeList {
         $employeeList = new EmployeeList();
-        $objects = DB::table(self::TABLE)
-                     ->select(['id', 'first_name', 'last_name', 'salary', 'department_id'])
-                     ->orderBy($orderColumn, $orderDirection)
-                     ->get();
+        $objects = DB::select(
+            "SELECT id, first_name, last_name, salary, department_id
+                   FROM employee
+                   ORDER BY $orderColumn $orderDirection",
+        );
 
         if (!$objects) {
             return $employeeList;
@@ -72,10 +75,12 @@ class EmployeeDAO
      */
     public function fetch(int $id)
     {
-        $object = DB::table(self::TABLE)
-                    ->select(['id', 'department_id', 'first_name', 'last_name', 'salary'])
-                    ->where('id', $id)
-                    ->first();
+        $object = DB::selectOne(
+            'SELECT id, first_name, last_name, salary, department_id
+                   FROM employee
+                   WHERE id = ?',
+            [$id]
+        );
 
         if (!$object) {
             return false;
@@ -87,18 +92,15 @@ class EmployeeDAO
     public function create(array $data): Employee
     {
         $currentTime = $this->time->getTimeSqlFormat();
-        $id = DB::table(self::TABLE)
-                ->insertGetId(
-                    [
-                        'department_id' => $data['department_id'],
-                        'first_name' => $data['first_name'],
-                        'last_name' => $data['last_name'],
-                        'salary' => $data['salary'],
-                        'updated_at' => $currentTime,
-                        'created_at' => $currentTime,
-                    ]
-                );
+        DB::insert(
+            'INSERT INTO employee(`department_id`, `first_name`, `last_name`, `salary`, `updated_at`, `created_at`)
+                   VALUES(?, ?, ?, ?, ?, ?)',
+            [$data['department_id'], $data['first_name'], $data['last_name'], $data['salary'], $currentTime, $currentTime]
+        );
 
-        return $this->fetch($id);
+        $id = DB::getPdo()
+                ->lastInsertId();
+
+        return $this->fetch((int) $id);
     }
 }

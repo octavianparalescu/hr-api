@@ -7,7 +7,6 @@ namespace App\Models\Department;
 use App\Entities\Department\Department;
 use App\Entities\Department\DepartmentList;
 use App\Entities\Time\TimeInterface;
-use App\Models\Employee\EmployeeDAO;
 use Exception;
 use Illuminate\Support\Facades\DB;
 
@@ -26,9 +25,7 @@ class DepartmentDAO
     public function fetchAll(): DepartmentList
     {
         $departmentList = new DepartmentList();
-        $objects = DB::table(self::TABLE)
-                     ->select(['id', 'name'])
-                     ->get();
+        $objects = DB::select('SELECT id, name FROM department');
 
         if (!$objects) {
             return $departmentList;
@@ -44,15 +41,15 @@ class DepartmentDAO
     public function fetchWithEmployeeSalariesHigherCondition(int $minNoOfEmployees, float $havingMinSalary): DepartmentList
     {
         $departmentList = new DepartmentList();
-        $objects = DB::table(self::TABLE)
-                     ->select(['name'])
-                     ->addSelect(DB::raw('count(' . EmployeeDAO::TABLE . '.id)'))
-                     ->addSelect(DB::raw(self::TABLE . '.id as id'))
-                     ->leftJoin(EmployeeDAO::TABLE, EmployeeDAO::TABLE . '.department_id', self::TABLE . '.id')
-                     ->whereRaw(EmployeeDAO::TABLE . '.salary > ?', [$havingMinSalary])
-                     ->havingRaw('count(employee.id) > ?', [$minNoOfEmployees])
-                     ->groupByRaw(self::TABLE . '.id, name')
-                     ->get();
+        $objects = DB::select(
+            'SELECT name, count(employee.id), department.id as id 
+                   FROM department
+                   LEFT JOIN employee ON employee.department_id = department.id
+                   WHERE employee.salary > ?
+                   GROUP BY department.id, name
+                   HAVING count(employee.id) > ?',
+            [$havingMinSalary, $minNoOfEmployees]
+        );
 
         if (!$objects) {
             return $departmentList;
@@ -68,14 +65,11 @@ class DepartmentDAO
     public function fetchAllWithMaxSalaries(): DepartmentList
     {
         $departmentList = new DepartmentList();
-        $objects = DB::table(self::TABLE)
-                     ->select(['id', 'name'])
-                     ->addSelect(
-                         DB::raw(
-                             '(SELECT MAX(salary) as max_salary FROM ' . EmployeeDAO::TABLE . ' WHERE department_id=' . self::TABLE . '.id) as max_salary'
-                         )
-                     )
-                     ->get();
+        $objects = DB::select(
+            'SELECT id, name,
+                       (SELECT MAX(salary) FROM employee WHERE employee.department_id=department.id) as max_salary
+                   FROM department'
+        );
 
         if (!$objects) {
             return $departmentList;
@@ -93,10 +87,7 @@ class DepartmentDAO
      */
     public function fetch(int $id)
     {
-        $object = DB::table(self::TABLE)
-                    ->select(['id', 'name'])
-                    ->where('id', $id)
-                    ->first();
+        $object = DB::selectOne('SELECT id, name FROM department where id = ?', [$id]);
 
         if (!$object) {
             return false;
@@ -108,9 +99,14 @@ class DepartmentDAO
     public function create(array $data): Department
     {
         $currentTime = $this->time->getTimeSqlFormat();
-        $id = DB::table(self::TABLE)
-                ->insertGetId(['name' => $data['name'], 'updated_at' => $currentTime, 'created_at' => $currentTime]);
+        DB::insert(
+            'INSERT INTO department(`name`, `updated_at`, `created_at`) VALUES(?, ?, ?)',
+            [$data['name'], $currentTime, $currentTime]
+        );
 
-        return $this->fetch($id);
+        $id = DB::getPdo()
+                ->lastInsertId();
+
+        return $this->fetch((int) $id);
     }
 }

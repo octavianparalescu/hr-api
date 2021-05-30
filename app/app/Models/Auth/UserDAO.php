@@ -23,10 +23,7 @@ class UserDAO
 
     public function fetch(int $id): ?User
     {
-        $object = DB::table(self::TABLE)
-                    ->select(self::COLUMNS)
-                    ->where('id', $id)
-                    ->first();
+        $object = DB::selectOne('SELECT id, first_name, last_name, email FROM user WHERE id = ?', [$id]);
 
         if (!$object) {
             return null;
@@ -37,10 +34,7 @@ class UserDAO
 
     public function isEmailRegistered(string $email): bool
     {
-        $object = DB::table(self::TABLE)
-                    ->select(['id'])
-                    ->where('email', $email)
-                    ->first();
+        $object = DB::selectOne('SELECT id FROM user WHERE email = ?', [$email]);
 
         if (!$object) {
             return false;
@@ -52,18 +46,28 @@ class UserDAO
     public function create(array $inputData): User
     {
         $currentTime = $this->time->getTimeSqlFormat();
-        $userId = DB::table(self::TABLE)
-                    ->insertGetId(array_merge($inputData, ['created_at' => $currentTime, 'updated_at' => $currentTime]));
+        DB::insert(
+            'INSERT INTO user(`first_name`, `last_name`, `email`, `password`, `created_at`, `updated_at`)
+                   VALUES(?, ?, ?, ?, ?, ?)',
+            [
+                $inputData['first_name'],
+                $inputData['last_name'],
+                $inputData['email'],
+                $inputData['password'],
+                $currentTime,
+                $currentTime,
+            ]
+        );
 
-        return $this->fetch($userId);
+        $userId = DB::getPdo()
+                    ->lastInsertId();
+
+        return $this->fetch((int) $userId);
     }
 
     public function getPasswordForEmail(string $email)
     {
-        $object = DB::table(self::TABLE)
-                    ->select(['password'])
-                    ->where('email', $email)
-                    ->first();
+        $object = DB::selectOne('SELECT password FROM user WHERE email = ?', [$email]);
 
         if (!$object) {
             return false;
@@ -74,10 +78,7 @@ class UserDAO
 
     public function fetchByEmail(string $email): ?User
     {
-        $object = DB::table(self::TABLE)
-                    ->select(self::COLUMNS)
-                    ->where('email', $email)
-                    ->first();
+        $object = DB::selectOne('SELECT id, first_name, last_name, email FROM user WHERE email = ?', [$email]);
 
         if (!$object) {
             return null;
